@@ -5,6 +5,7 @@
   "main": "paragon.js",
   "scripts": {
     "start": "webpack-dev-server",
+    "build": "microbundle",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

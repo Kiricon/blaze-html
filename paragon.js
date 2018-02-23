@@ -46,27 +46,87 @@ const register = (c, shadowRoot) => {
     }
 }
 
+/* State management */
+
+
+class store {
+
+    constructor(state) {
+        this.state = state || {};
+        this._subscriptions = [];
+    }
+
+    getState() {
+        return this.state;
+    }
+
+    subscribe(fn) {
+        this._subscriptions.push(fn);
+    }
+
+    setState(newState) {
+        const oldState = this.state;
+
+        // Replace the two for loops with spread operator in the future
+        let tempState = {};
+        for(let prop in this.state) {
+            tempState[prop] = this.state[prop];
+        }
+
+        for(let prop in newState) {
+            tempState[prop] = newState[prop];
+        }
+
+        this.state = tempState;
+        this._callSubcriptions(oldState);
+    }
+
+    _callSubcriptions(oldState) {
+        for(let i = 0; i < this._subscriptions.length; i++) {
+            this._subscriptions[i](this.state, oldState);
+        }
+    }
+}
+
+const createStore = (defaultState) => {
+    return new store(defaultState);
+}
+
 /* Inherit class */
 
 class Paragon extends HTMLElement {
     connectedCallback() {
-        this._state = createState({});
+        this._state = createStore({});
         this.state = this._state.getState();
 
         if(typeof this.stateChanged === 'function') {
             this._state.subscribe(this.stateChanged.bind(this));
+            this._state.subscribe(this._injectStateInToElement.bind(this));
         }
 
         if(typeof this.connected === 'function') {
             this.connected();
         }
+
     }
 
     setState(obj) {
         this._state.setState(obj);
         this.state = this._state.getState();
     }
+
+    _injectStateInToElement(state) {
+        for(let prop in state) {
+            let element = this.shadowRoot.querySelector(`.${prop}`);
+            if (!!element) {
+                element.innerHTML = state[prop];
+            }
+        }
+    }
+
 }
+
+
 
 export {
     html,
