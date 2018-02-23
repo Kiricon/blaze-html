@@ -101,8 +101,9 @@ class Paragon extends HTMLElement {
 
         if(typeof this.stateChanged === 'function') {
             this._state.subscribe(this.stateChanged.bind(this));
-            this._state.subscribe(this._injectStateInToElement.bind(this));
         }
+
+        this._state.subscribe(this._injectStateInToElement.bind(this));
 
         if(typeof this.connected === 'function') {
             this.connected();

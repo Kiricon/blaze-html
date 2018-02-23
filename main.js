@@ -10,10 +10,6 @@ class HotdogButton extends Paragon {
         this.increment();
     }
 
-    stateChanged(state) {
-        //this.shadowRoot.querySelector('button').innerHTML = state.count;
-    }
-
     increment() {
         this.setState({
             count: this.state.count + 1
