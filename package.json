@@ -1,0 +1,27 @@
+{
+  "name": "paragon",
+  "version": "1.0.0",
+  "description": "Another javascript framework",
+  "main": "paragon.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kiricon/paragon.git"
+  },
+  "author": "Dominic Valenciana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kiricon/paragon/issues"
+  },
+  "homepage": "https://github.com/Kiricon/paragon#readme",
+  "dependencies": {
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "devDependencies": {
+    "microbundle": "^0.4.4"
+  }
+}
