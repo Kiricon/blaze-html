@@ -16,28 +16,21 @@ function buildTagName(name) {
 
 const register = (c, shadowRoot) => {
 
-    shadowRoot = shadowRoot === undefined ?  true : shadowRoot;
+    shadowRoot = shadowRoot || false;
 
-    class ShadowRootCustomElement extends c {
+    class RegisteredCustomElement extends c {
         constructor() {
             super();
-            this.attachShadow({mode: 'open'});
-            render(this.template(this.state), this.shadowRoot);
+            if(shadowRoot) {
+                this.attachShadow({mode: 'open'});
+                render(this.template(this.state), this.shadowRoot);
+            } else {
+                render(this.template(this.state), this);
+            }
         }
     }
 
-    class InlineCustomElement extends c {
-        constructor() {
-            super();
-            render(this.template(this.state), this);
-        }
-    }
-
-    if(shadowRoot) {
-        customElements.define(buildTagName(c.name), ShadowRootCustomElement);
-    }else {
-        customElements.define(buildTagName(c.name), InlineCustomElement);
-    }
+    customElements.define(buildTagName(c.name), RegisteredCustomElement);
 }
 
 /* State management */
@@ -102,7 +95,7 @@ class Paragon extends HTMLElement {
                 render(this.template(state), this);
             }
         });
-        
+
         if(typeof this.stateChanged === 'function') {
             this._state.subscribe(this.stateChanged.bind(this));
         }
