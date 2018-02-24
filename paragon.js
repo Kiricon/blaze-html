@@ -116,6 +116,14 @@ class Paragon extends HTMLElement {
         this.state = this._state.getState();
     }
 
+    query(queryString) {
+        if(this.shadowRoot) {
+            return this.shadowRoot.querySelector(queryString);
+        } else {
+            return this.querySelector(queryString);
+        }
+    }
+
     _injectStateInToElement(state) {
         for(let prop in state) {
             let element = this.shadowRoot.querySelector(`.${prop}`);
