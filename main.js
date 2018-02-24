@@ -1,4 +1,4 @@
-import { html, Paragon, register } from './paragon';
+import { html, Paragon, register } from './src/paragon';
 
 
 class HotdogButton extends Paragon {
@@ -8,27 +8,15 @@ class HotdogButton extends Paragon {
             count: 0,
             count2: 0,
         });
-    }
-
-    connected() {
         this.increment();
-        this.query('button').addEventListener('click', this.resetCount.bind(this));
     }
 
     increment() {
         this.setState({
-            count: this.state.count + 1,
-            count2: this.state.count + 2
+            count: this.state.count++
         });
 
         setTimeout(this.increment.bind(this), 1000);
-    }
-
-    resetCount() {
-        this.setState({
-            count: 0,
-            count2: 0
-        });
     }
 
     template(state) {
