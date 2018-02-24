@@ -2,12 +2,15 @@ import { html, Paragon, register } from './paragon';
 
 
 class HotdogButton extends Paragon {
-    connected() {
+    constructor() {
+        super();
         this.setState({
             count: 0,
-            count2: 0
+            count2: 0,
         });
-        
+    }
+
+    connected() {
         this.increment();
         this.query('button').addEventListener('click', this.resetCount.bind(this));
     }
@@ -28,11 +31,11 @@ class HotdogButton extends Paragon {
         });
     }
 
-    template() {
+    template(state) {
         return html`
             <button>
-                <span class="count"></span>
-                <span class="count2"></span>
+                <span>${state.count}</span>
+                <span>${state.count2}</span>
             </button>
         `;
     }

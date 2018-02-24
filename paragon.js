@@ -1,4 +1,4 @@
-const html = String.raw;
+import {html, render} from 'lit-html';
 
 /* Register Element */
 
@@ -18,24 +18,18 @@ const register = (c, shadowRoot) => {
 
     shadowRoot = shadowRoot === undefined ?  true : shadowRoot;
 
-    const template = document.createElement('template');
-    template.innerHTML = c.prototype.template();
-    c.prototype.template = null;
-
     class ShadowRootCustomElement extends c {
         constructor() {
             super();
             this.attachShadow({mode: 'open'});
-            this.shadowRoot.appendChild(template.content.cloneNode(true));
+            render(this.template(this.state), this.shadowRoot);
         }
-
-        template() {}
     }
 
     class InlineCustomElement extends c {
         constructor() {
             super();
-            this.appendChild(template.content.cloneNode(true));
+            render(this.template(this.state), this);
         }
     }
 
@@ -95,16 +89,26 @@ const createStore = (defaultState) => {
 /* Inherit class */
 
 class Paragon extends HTMLElement {
-    connectedCallback() {
+
+    constructor() {
+        super();
         this._state = createStore({});
         this.state = this._state.getState();
 
+        this._state.subscribe((state) => {
+            if(this.shadowRoot) {
+                render(this.template(state), this.shadowRoot);
+            } else {
+                render(this.template(state), this);
+            }
+        });
+        
         if(typeof this.stateChanged === 'function') {
             this._state.subscribe(this.stateChanged.bind(this));
         }
+    }
 
-        this._state.subscribe(this._injectStateInToElement.bind(this));
-
+    connectedCallback() {
         if(typeof this.connected === 'function') {
             this.connected();
         }
@@ -121,15 +125,6 @@ class Paragon extends HTMLElement {
             return this.shadowRoot.querySelector(queryString);
         } else {
             return this.querySelector(queryString);
-        }
-    }
-
-    _injectStateInToElement(state) {
-        for(let prop in state) {
-            let element = this.shadowRoot.querySelector(`.${prop}`);
-            if (!!element) {
-                element.innerHTML = state[prop];
-            }
         }
     }
 
