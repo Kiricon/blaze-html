@@ -128,5 +128,6 @@ class Paragon extends HTMLElement {
 export {
     html,
     register,
-    Paragon
+    Paragon,
+    createStore
 }
