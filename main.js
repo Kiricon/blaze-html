@@ -15,12 +15,12 @@ class HotdogButton extends Paragon {
         });
     }
 
-    template(state) {
+    template(props, state) {
         return html`
             <button on-click=${this.increment.bind(this)}>
                 Increment
             </button>
-            <span> Count: ${state.count} </span>
+            <span> Count ${props.name}: ${state.count} </span>
         `;
     }
 }

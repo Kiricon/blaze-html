@@ -23,14 +23,14 @@ const register = (c, shadowRoot) => {
             super();
             if(shadowRoot) {
                 this.attachShadow({mode: 'open'});
-                render(this.template(this.state), this.shadowRoot);
+                render(this.template(this.props, this.state), this.shadowRoot);
             } else {
-                render(this.template(this.state), this);
+                render(this.template(this.props, this.state), this);
             }
         }
     }
 
-    customElements.define(buildTagName(c.name), RegisteredCustomElement);
+    window.customElements.define(buildTagName(c.name), RegisteredCustomElement);
 }
 
 /* State management */
@@ -87,21 +87,29 @@ class Paragon extends HTMLElement {
         super();
         this._state = createStore({});
         this.state = this._state.getState();
+        this.props = {};
+        Array.prototype.slice.call(this.attributes).forEach((item) => {
+            this.props[item.name] = item.value;
+        });
 
         this._state.subscribe((state) => {
-            if(this.shadowRoot) {
-                render(this.template(state), this.shadowRoot);
-            } else {
-                render(this.template(state), this);
-            }
+            this.state = state;
+            this.render();
         });
+    }
+
+    render() {
+        if(this.shadowRoot) {
+            render(this.template(this.props, this.state), this.shadowRoot);
+        } else {
+            render(this.template(this.props, this.state), this);
+        }
     }
 
     connectedCallback() {
         if(typeof this.connected === 'function') {
             this.connected();
         }
-
     }
 
     setState(obj) {
@@ -116,6 +124,20 @@ class Paragon extends HTMLElement {
             return this.querySelector(queryString);
         }
     }
+
+    static get observedAttributes() {
+        return ['name'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        console.log(name);
+        console.log(oldValue);
+        console.log(newValue);
+        if(oldValue !== newValue && !!oldValue) {
+            this.props[name] = newValue;
+            this.render();
+        }
+      }
 
 }
 
