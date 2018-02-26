@@ -110,6 +110,7 @@ class Paragon extends HTMLElement {
         if(typeof this.connected === 'function') {
             this.connected();
         }
+        this._observeAttrChange();
     }
 
     setState(obj) {
@@ -125,18 +126,22 @@ class Paragon extends HTMLElement {
         }
     }
 
-    static get observedAttributes() {
-        return ['name'];
-    }
+    _observeAttrChange() {
+        let observer = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            if (mutation.type === 'attributes') {
+              let newVal = mutation.target.getAttribute(mutation.attributeName);
+                this._attributeChangedCallback(mutation.attributeName, newVal);
+            }
+          });
+        });
+        observer.observe(this, {attributes: true});
+        return observer;
+      }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        console.log(name);
-        console.log(oldValue);
-        console.log(newValue);
-        if(oldValue !== newValue && !!oldValue) {
-            this.props[name] = newValue;
-            this.render();
-        }
+    _attributeChangedCallback(name, newValue) {
+        this.props[name] = newValue;
+        this.render();
       }
 
 }
