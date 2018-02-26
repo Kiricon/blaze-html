@@ -16,11 +16,20 @@ function buildTagName(name) {
 
 const register = (c, shadowRoot) => {
 
+    const methods = Object.getOwnPropertyNames(c.prototype).filter((p) => {
+        return typeof c.prototype[p] === 'function' && p[0] !== '_' && p !== 'constructor' && c.prototype[p].length === 0;
+    });
+
     shadowRoot = shadowRoot || false;
 
     class RegisteredCustomElement extends c {
         constructor() {
             super();
+            
+            methods.forEach(p => {
+                this[p] = this[p].bind(this);
+            });
+
             if(shadowRoot) {
                 this.attachShadow({mode: 'open'});
                 render(this.template(this.props, this.state), this.shadowRoot);
@@ -137,12 +146,13 @@ class Paragon extends HTMLElement {
         });
         observer.observe(this, {attributes: true});
         return observer;
-      }
+    }
 
     _attributeChangedCallback(name, newValue) {
         this.props[name] = newValue;
         this.render();
-      }
+    }
+
 
 }
 
