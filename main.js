@@ -5,26 +5,22 @@ class HotdogButton extends Paragon {
     constructor() {
         super();
         this.setState({
-            count: 0,
-            count2: 0,
+            count: 0
         });
-        this.increment();
     }
 
-    increment() {
+    increment(){
         this.setState({
-            count: this.state.count++
+            count: this.state.count + 1
         });
-
-        setTimeout(this.increment.bind(this), 1000);
     }
 
     template(state) {
         return html`
-            <button>
-                <span>${state.count}</span>
-                <span>${state.count2}</span>
+            <button on-click=${this.increment.bind(this)}>
+                Increment
             </button>
+            <span> Count: ${state.count} </span>
         `;
     }
 }
