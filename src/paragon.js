@@ -17,7 +17,7 @@ function buildTagName(name) {
 const register = (c, shadowRoot) => {
 
     const methods = Object.getOwnPropertyNames(c.prototype).filter((p) => {
-        return typeof c.prototype[p] === 'function' && p[0] !== '_' && p !== 'constructor' && c.prototype[p].length === 0;
+        return typeof c.prototype[p] === 'function' && p !== 'constructor' && c.prototype[p].length === 0;
     });
 
     shadowRoot = shadowRoot || false;
@@ -25,7 +25,7 @@ const register = (c, shadowRoot) => {
     class RegisteredCustomElement extends c {
         constructor() {
             super();
-            
+
             methods.forEach(p => {
                 this[p] = this[p].bind(this);
             });
@@ -61,8 +61,6 @@ class store {
     }
 
     setState(newState) {
-        const oldState = this.state;
-
         // Replace the two for loops with spread operator in the future
         let tempState = {};
         for(let prop in this.state) {
@@ -74,7 +72,7 @@ class store {
         }
 
         this.state = tempState;
-        this._callSubcriptions(oldState);
+        this._callSubcriptions(this.state);
     }
 
     _callSubcriptions(oldState) {
@@ -103,11 +101,11 @@ class Paragon extends HTMLElement {
 
         this._state.subscribe((state) => {
             this.state = state;
-            this.render();
+            this._render();
         });
     }
 
-    render() {
+    _render() {
         if(this.shadowRoot) {
             render(this.template(this.props, this.state), this.shadowRoot);
         } else {
@@ -125,14 +123,6 @@ class Paragon extends HTMLElement {
     setState(obj) {
         this._state.setState(obj);
         this.state = this._state.getState();
-    }
-
-    query(queryString) {
-        if(this.shadowRoot) {
-            return this.shadowRoot.querySelector(queryString);
-        } else {
-            return this.querySelector(queryString);
-        }
     }
 
     _observeAttrChange() {
