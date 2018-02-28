@@ -15,16 +15,12 @@ function buildTagName(name: string) {
     }).join('');
 }
 
-interface IParagonClass<P,S> extends Paragon {
+interface IParagonClass<S> extends Paragon<S> {
     prototype: any;
-    new(): IParagonClass<P,S>;
-    template(props: P, state: any): TemplateResult;
-    props: P;
-    state: S;
-    [key: string]: any;
+    new(): IParagonClass<S>;
 }
 
-function register(c: IParagonClass<P,S>, shadowRoot: boolean) {
+function register(c: IParagonClass<S>, shadowRoot: boolean) {
 
     const methods = Object.getOwnPropertyNames(c.prototype).filter((p) => {
         return typeof c.prototype[p] === 'function' && p !== 'constructor' && c.prototype[p].length === 0;
