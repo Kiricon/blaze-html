@@ -1,26 +1,18 @@
-import { html, Paragon, register } from './src/paragon';
+import { html, Paragon, register, linkState } from './src/paragon';
 
 
 class HotdogButton extends Paragon {
     constructor() {
         super();
         this.setState({
-            count: 0
-        });
-    }
-
-    increment(){
-        this.setState({
-            count: this.state.count + 1
+            text: "bored"
         });
     }
 
     template(props, state) {
         return html`
-            <button on-click=${this.increment}>
-                Increment
-            </button>
-            <span> Count ${props.name}: ${state.count} </span>
+            ${state.text} <br/>
+            <input on-input=${linkState(this, 'text')} value=${state.text} />
         `;
     }
 }

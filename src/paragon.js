@@ -146,11 +146,20 @@ class Paragon extends HTMLElement {
 
 }
 
+function linkState(element, stateProp) {
+    return (e) => {
+        element.setState({
+            [stateProp]: e.target.value
+        });
+    }
+}
+
 
 
 export {
     html,
     register,
     Paragon,
-    createStore
+    createStore,
+    linkState
 }
