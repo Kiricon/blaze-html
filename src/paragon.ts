@@ -1,5 +1,5 @@
 import {html, render} from 'lit-html/lib/lit-extended';
-import { TemplateResult } from 'lit-html';
+import { TemplateResult, Template } from 'lit-html';
 
 /* Register Element */
 
@@ -55,7 +55,7 @@ function register(c: IParagonClass<P,S>, shadowRoot: boolean) {
 /* State management */
 
 
-class store<S> {
+class Store<S> {
 
     public state: S;
     private _subscriptions: { (state: S): void}[];
@@ -65,7 +65,7 @@ class store<S> {
         this._subscriptions = [];
     }
 
-    getState() {
+    getState(): S {
         return this.state;
     }
 
@@ -95,20 +95,26 @@ class store<S> {
     }
 }
 
-const createStore = (defaultState) => {
-    return new store(defaultState);
+function createStore<S>(defaultState: S) {
+    return new Store(defaultState);
 }
 
 /* Inherit class */
 
-class Paragon extends HTMLElement {
+abstract class Paragon<S> extends HTMLElement {
+    public _state: Store<S>;
+    public state: S;
+    public props: any;
+
+    abstract template(props: any, state: S): TemplateResult;
+    abstract connected(): void;
 
     constructor() {
         super();
-        this._state = createStore({});
+        this._state = createStore(<S>{});
         this.state = this._state.getState();
         this.props = {};
-        Array.prototype.slice.call(this.attributes).forEach((item) => {
+        Array.prototype.slice.call(this.attributes).forEach((item: {name: string, value: any}) => {
             this.props[item.name] = item.value;
         });
 
@@ -133,7 +139,7 @@ class Paragon extends HTMLElement {
         this._observeAttrChange();
     }
 
-    setState(obj) {
+    setState(obj: S) {
         this._state.setState(obj);
         this.state = this._state.getState();
     }
@@ -142,8 +148,10 @@ class Paragon extends HTMLElement {
         let observer = new MutationObserver(mutations => {
           mutations.forEach(mutation => {
             if (mutation.type === 'attributes') {
-              let newVal = mutation.target.getAttribute(mutation.attributeName);
-                this._attributeChangedCallback(mutation.attributeName, newVal);
+                let newVal = mutation.target.getAttribute(mutation.attributeName);
+                if(!!mutation.attributeName) {
+                    this._attributeChangedCallback(mutation.attributeName, newVal);
+                }
             }
           });
         });
@@ -151,18 +159,18 @@ class Paragon extends HTMLElement {
         return observer;
     }
 
-    _attributeChangedCallback(name, newValue) {
+    _attributeChangedCallback(name:string, newValue:any) {
         this.props[name] = newValue;
-        this.render();
+        this._render();
     }
 
 
 }
 
-function linkState(element, stateProp) {
-    return (e) => {
+function linkState(element: any, stateProp: string) {
+    return (e: any) => {
         element.setState({
-            [stateProp]: e.target.value
+            [stateProp]: e.currentTarget.value
         });
     }
 }
