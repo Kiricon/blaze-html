@@ -12,7 +12,7 @@ class HotdogButton extends Paragon {
     template(props, state) {
         return html`
             ${state.text} <br/>
-            <input on-input=${linkState(this, 'text')} value=${state.text} />
+            <input on-input=${linkState(this, 'text')} />
         `;
     }
 }

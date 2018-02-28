@@ -1,9 +1,10 @@
 import {html, render} from 'lit-html/lib/lit-extended';
+import { TemplateResult } from 'lit-html';
 
 /* Register Element */
 
-function buildTagName(name) {
-    return [...name].map( (x, i) => {
+function buildTagName(name: string) {
+    return name.split('').map( (x, i) => {
         if( x < 'a') {
             if(i !== 0) {
                 return `-${x.toLowerCase()}`;
@@ -14,7 +15,16 @@ function buildTagName(name) {
     }).join('');
 }
 
-const register = (c, shadowRoot) => {
+interface IParagonClass<P,S> extends Paragon {
+    prototype: any;
+    new(): IParagonClass<P,S>;
+    template(props: P, state: any): TemplateResult;
+    props: P;
+    state: S;
+    [key: string]: any;
+}
+
+function register(c: IParagonClass<P,S>, shadowRoot: boolean) {
 
     const methods = Object.getOwnPropertyNames(c.prototype).filter((p) => {
         return typeof c.prototype[p] === 'function' && p !== 'constructor' && c.prototype[p].length === 0;
@@ -45,9 +55,12 @@ const register = (c, shadowRoot) => {
 /* State management */
 
 
-class store {
+class store<S> {
 
-    constructor(state) {
+    public state: S;
+    private _subscriptions: { (state: S): void}[];
+
+    constructor(state: S) {
         this.state = state || {};
         this._subscriptions = [];
     }
@@ -56,13 +69,13 @@ class store {
         return this.state;
     }
 
-    subscribe(fn) {
+    subscribe(fn: {(state: S): void}) {
         this._subscriptions.push(fn);
     }
 
-    setState(newState) {
+    setState(newState: S) {
         // Replace the two for loops with spread operator in the future
-        let tempState = {};
+        let tempState: S = <S>{};
         for(let prop in this.state) {
             tempState[prop] = this.state[prop];
         }
@@ -72,12 +85,12 @@ class store {
         }
 
         this.state = tempState;
-        this._callSubcriptions(this.state);
+        this._callSubcriptions();
     }
 
-    _callSubcriptions(oldState) {
+    _callSubcriptions() {
         for(let i = 0; i < this._subscriptions.length; i++) {
-            this._subscriptions[i](this.state, oldState);
+            this._subscriptions[i](this.state);
         }
     }
 }
