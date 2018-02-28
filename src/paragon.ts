@@ -15,12 +15,14 @@ function buildTagName(name: string) {
     }).join('');
 }
 
-interface IParagonClass<S> extends Paragon<S> {
+interface IParagonClass extends HTMLElement{
     prototype: any;
-    new(): IParagonClass<S>;
+    new(): IParagonClass;
+    [key: string]: any;
+    shadowRoot: ShadowRoot;
 }
 
-function register(c: IParagonClass<S>, shadowRoot: boolean) {
+function register(c: IParagonClass, shadowRoot?: boolean) {
 
     const methods = Object.getOwnPropertyNames(c.prototype).filter((p) => {
         return typeof c.prototype[p] === 'function' && p !== 'constructor' && c.prototype[p].length === 0;
@@ -97,13 +99,16 @@ function createStore<S>(defaultState: S) {
 
 /* Inherit class */
 
+interface Paragon<S> {
+    connected?(): void;
+}
+
 abstract class Paragon<S> extends HTMLElement {
     public _state: Store<S>;
     public state: S;
     public props: any;
 
     abstract template(props: any, state: S): TemplateResult;
-    abstract connected(): void;
 
     constructor() {
         super();
@@ -141,8 +146,8 @@ abstract class Paragon<S> extends HTMLElement {
     }
 
     _observeAttrChange() {
-        let observer = new MutationObserver(mutations => {
-          mutations.forEach(mutation => {
+        let observer = new MutationObserver((mutations: any[]) => {
+          mutations.forEach((mutation: any) => {
             if (mutation.type === 'attributes') {
                 let newVal = mutation.target.getAttribute(mutation.attributeName);
                 if(!!mutation.attributeName) {
