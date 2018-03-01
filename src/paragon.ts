@@ -15,11 +15,12 @@ function buildTagName(name: string) {
     }).join('');
 }
 
-interface IParagonClass extends HTMLElement{
+interface IParagonClass extends Paragon<{}> {
     prototype: any;
     new(): IParagonClass;
     [key: string]: any;
-    shadowRoot: ShadowRoot;
+    template(state: any, prop: any): TemplateResult;
+    shadowRoot: any;
 }
 
 function register(c: IParagonClass, shadowRoot?: boolean) {
