@@ -17,4 +17,4 @@ class HotdogButton extends Paragon<{text: string}> {
     }
 }
 
-register(HotdogButton);
+register(<any>HotdogButton);
