@@ -2,10 +2,11 @@
   "name": "paragon",
   "version": "1.0.0",
   "description": "Another javascript framework",
-  "main": "paragon.js",
+  "main": "dist/paragon.js",
+  "types": "dist/paragon.d.ts",
   "scripts": {
     "start": "webpack-dev-server --mode development",
-    "build": "microbundle",
+    "build": "microbundle --compress false",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -184,5 +184,7 @@ export {
     register,
     Paragon,
     createStore,
-    linkState
+    linkState,
+    Store,
+    IParagonClass
 }
