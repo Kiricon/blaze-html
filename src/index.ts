@@ -1,4 +1,4 @@
-import { html, Paragon, register, linkState } from './src/paragon';
+import { html, Paragon, register, linkState } from './paragon';
 
 interface IState {
     text: string;
@@ -11,7 +11,7 @@ class HotdogButton extends Paragon<IState> {
             text: "bored"
         });
     }
-
+    
     template(props: any, state: IState) {
         return html`
             ${state.text} <br/>
