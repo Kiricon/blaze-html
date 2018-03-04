@@ -1,7 +1,10 @@
 import { html, Paragon, register, linkState } from './src/paragon';
 
+interface IState {
+    text: string;
+}
 
-class HotdogButton extends Paragon<{text: string}> {
+class HotdogButton extends Paragon<IState> {
     constructor() {
         super();
         this.setState({
@@ -9,7 +12,7 @@ class HotdogButton extends Paragon<{text: string}> {
         });
     }
 
-    template(props: any, state: any) {
+    template(props: any, state: IState) {
         return html`
             ${state.text} <br/>
             <input on-input=${linkState(this, 'text')} />
