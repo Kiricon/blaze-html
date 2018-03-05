@@ -5,7 +5,6 @@
   "main": "dist/paragon.js",
   "types": "dist/paragon.d.ts",
   "scripts": {
-    "start": "webpack-dev-server --mode development",
     "build": "microbundle --compress false",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,10 +23,6 @@
     "webpack-cli": "^2.0.10"
   },
   "devDependencies": {
-    "microbundle": "^0.4.4",
-    "ts-loader": "^4.0.1",
-    "typescript": "^2.7.2",
-    "webpack": "^4.1.0",
-    "webpack-dev-server": "^3.1.0"
+    "microbundle": "^0.4.4"
   }
 }
