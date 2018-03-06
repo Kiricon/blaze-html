@@ -2,7 +2,6 @@ import {html, render} from 'lit-html/lib/lit-extended';
 import { TemplateResult, Template } from 'lit-html';
 
 /* Register Element */
-
 function buildTagName(name: string) {
     return name.split('').map( (x, i) => {
         if( x < 'a') {
