@@ -1,24 +1,24 @@
 {
-  "name": "spark",
+  "name": "blaze-html",
   "version": "0.1.0",
   "description": "3kb microframework for creating reactive custom elements using lit-html",
-  "main": "dist/spark.js",
-  "types": "dist/spark.d.ts",
+  "main": "dist/blaze-html.js",
+  "types": "dist/blaze-html.d.ts",
   "scripts": {
-    "start": "microbundle watch -i spark.ts --compress false -o dist",
-    "build": "microbundle build -i spark.ts --compress false -o dist",
+    "start": "microbundle watch -i blaze-html.ts --compress false -o dist",
+    "build": "microbundle build -i blaze-html.ts --compress false -o dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kiricon/spark.git"
+    "url": "git+https://github.com/Kiricon/blaze-html.git"
   },
   "author": "Dominic Valenciana",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Kiricon/spark/issues"
+    "url": "https://github.com/Kiricon/blaze-html/issues"
   },
-  "homepage": "https://github.com/Kiricon/spark#readme",
+  "homepage": "https://github.com/Kiricon/blaze-html#readme",
   "dependencies": {
     "lit-html": "^0.9.0",
     "webpack-cli": "^2.0.10"

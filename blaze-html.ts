@@ -94,11 +94,11 @@ function createStore<S>(defaultState: S) {
 
 /* Inherit class */
 
-interface Spark<S> {
+interface Blaze<S> {
     connected?(): void;
 }
 
-abstract class Spark<S> extends HTMLElement {
+abstract class Blaze<S> extends HTMLElement {
     public _state: Store<S>;
     public state: S;
     public props: any;
@@ -176,7 +176,7 @@ function linkState(element: any, stateProp: string) {
 export {
     html,
     register,
-    Spark,
+    Blaze,
     createStore,
     linkState,
     Store
