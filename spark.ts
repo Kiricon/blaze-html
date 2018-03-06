@@ -94,11 +94,11 @@ function createStore<S>(defaultState: S) {
 
 /* Inherit class */
 
-interface Paragon<S> {
+interface Spark<S> {
     connected?(): void;
 }
 
-abstract class Paragon<S> extends HTMLElement {
+abstract class Spark<S> extends HTMLElement {
     public _state: Store<S>;
     public state: S;
     public props: any;
@@ -176,7 +176,7 @@ function linkState(element: any, stateProp: string) {
 export {
     html,
     register,
-    Paragon,
+    Spark,
     createStore,
     linkState,
     Store
