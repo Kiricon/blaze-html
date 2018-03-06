@@ -15,23 +15,15 @@ function buildTagName(name: string) {
     }).join('');
 }
 
-interface IParagonClass extends Paragon<{}> {
-    prototype: any;
-    new(): IParagonClass;
-    [key: string]: any;
-    template(state: any, prop: any): TemplateResult;
-    shadowRoot: any;
-}
+function register(CustomElementClass: { new(): any; [key: string]: any}, shadowRoot?: boolean) {
 
-function register(c: IParagonClass, shadowRoot?: boolean) {
-
-    const methods = Object.getOwnPropertyNames(c.prototype).filter((p) => {
-        return typeof c.prototype[p] === 'function' && p !== 'constructor' && c.prototype[p].length === 0;
+    const methods = Object.getOwnPropertyNames(CustomElementClass.prototype).filter((p) => {
+        return typeof CustomElementClass.prototype[p] === 'function' && p !== 'constructor' && CustomElementClass.prototype[p].length === 0;
     });
 
     shadowRoot = shadowRoot || false;
 
-    class RegisteredCustomElement extends c {
+    class RegisteredCustomElement extends CustomElementClass {
         constructor() {
             super();
 
@@ -41,14 +33,16 @@ function register(c: IParagonClass, shadowRoot?: boolean) {
 
             if(shadowRoot) {
                 this.attachShadow({mode: 'open'});
-                render(this.template(this.props, this.state), this.shadowRoot);
+                if(this.shadowRoot) {
+                    render(this.template(this.props, this.state), this.shadowRoot);
+                }
             } else {
-                render(this.template(this.props, this.state), this);
+                render(this.template(this.props, this.state), <any>this);
             }
         }
     }
 
-    window.customElements.define(buildTagName(c.name), RegisteredCustomElement);
+    window.customElements.define(buildTagName(CustomElementClass.name), RegisteredCustomElement);
 }
 
 /* State management */
@@ -185,6 +179,5 @@ export {
     Paragon,
     createStore,
     linkState,
-    Store,
-    IParagonClass
+    Store
 }
