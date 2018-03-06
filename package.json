@@ -1,7 +1,7 @@
 {
-  "name": "paragon",
-  "version": "1.0.0",
-  "description": "Another javascript framework",
+  "name": "spark",
+  "version": "0.1.0",
+  "description": "3kb microframework for creating reactive custom elements using lit-html",
   "main": "dist/paragon.js",
   "types": "dist/paragon.d.ts",
   "scripts": {
