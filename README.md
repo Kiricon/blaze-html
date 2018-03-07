@@ -8,7 +8,7 @@ class BlazeInput extends Blaze {
     constructor() {
         super();
         this.setState({
-            text: "bored"
+            text: "default text"
         });
     }
     
