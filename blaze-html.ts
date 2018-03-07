@@ -14,13 +14,13 @@ function buildTagName(name: string) {
     }).join('');
 }
 
-function register(CustomElementClass: { new(): any; [key: string]: any}, shadowRoot?: boolean) {
+function register(CustomElementClass: { new(): any; [key: string]: any}, tagName?: string) {
 
     const methods = Object.getOwnPropertyNames(CustomElementClass.prototype).filter((p) => {
         return typeof CustomElementClass.prototype[p] === 'function' && p !== 'constructor' && CustomElementClass.prototype[p].length === 0;
     });
 
-    shadowRoot = shadowRoot || false;
+    //shadowRoot = shadowRoot || false;
 
     class RegisteredCustomElement extends CustomElementClass {
         constructor() {
@@ -30,7 +30,7 @@ function register(CustomElementClass: { new(): any; [key: string]: any}, shadowR
                 this[p] = this[p].bind(this);
             });
 
-            if(shadowRoot) {
+            if(this.hasShadowRoot) {
                 this.attachShadow({mode: 'open'});
                 if(this.shadowRoot) {
                     render(this.template(this.props, this.state), this.shadowRoot);
@@ -41,7 +41,7 @@ function register(CustomElementClass: { new(): any; [key: string]: any}, shadowR
         }
     }
 
-    window.customElements.define(buildTagName(CustomElementClass.name), RegisteredCustomElement);
+    window.customElements.define(tagName || buildTagName(CustomElementClass.name), RegisteredCustomElement);
 }
 
 /* State management */
@@ -65,15 +65,19 @@ class Store<S> {
         this._subscriptions.push(fn);
     }
 
-    setState(newState: S) {
+    setState(newState: S | string, value?: any) {
         // Replace the two for loops with spread operator in the future
-        let tempState: S = <S>{};
+        let tempState: any = {};
         for(let prop in this.state) {
             tempState[prop] = this.state[prop];
         }
 
-        for(let prop in newState) {
-            tempState[prop] = newState[prop];
+        if(typeof newState === 'object') {
+            for(let prop in newState) {
+                tempState[prop] = newState[prop];
+            }
+        } else if (typeof newState === 'string' && !!value) {
+            tempState[newState] = value
         }
 
         this.state = tempState;
@@ -101,11 +105,13 @@ abstract class Blaze<S> extends HTMLElement {
     public _state: Store<S>;
     public state: S;
     public props: any;
+    public hasShadowRoot: boolean;
 
     abstract template(props: any, state: S): TemplateResult;
 
-    constructor() {
+    constructor(shadowRoot?: boolean) {
         super();
+        this.hasShadowRoot = shadowRoot || false;
         this._state = createStore(<S>{});
         this.state = this._state.getState();
         this.props = {};
@@ -134,10 +140,11 @@ abstract class Blaze<S> extends HTMLElement {
         this._observeAttrChange();
     }
 
-    setState(obj: S) {
-        this._state.setState(obj);
+    setState(obj: S | string, value?: any) {
+        this._state.setState(obj, value);
         this.state = this._state.getState();
     }
+
 
     _observeAttrChange() {
         let observer = new MutationObserver((mutations: any[]) => {
