@@ -1,6 +1,6 @@
 {
   "name": "blaze-html",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "3kb microframework for creating reactive custom elements using lit-html",
   "main": "dist/blaze-html.js",
   "types": "dist/blaze-html.d.ts",
@@ -13,6 +13,18 @@
     "type": "git",
     "url": "git+https://github.com/Kiricon/blaze-html.git"
   },
+  "keywords": [
+    "html",
+    "lit",
+    "blaze-html",
+    "lit-html",
+    "custom",
+    "element",
+    "template",
+    "micro",
+    "microframework",
+    "binding"
+  ],
   "author": "Dominic Valenciana",
   "license": "MIT",
   "bugs": {
