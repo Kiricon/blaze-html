@@ -65,7 +65,7 @@ class Store<S> {
         this._subscriptions.push(fn);
     }
 
-    setState(newState: S | string, value?: any) {
+    setState(newState: Partial<S> | string, value?: any) {
         // Replace the two for loops with spread operator in the future
         let tempState: any = {};
         for(let prop in this.state) {
@@ -140,7 +140,7 @@ abstract class Blaze<S> extends HTMLElement {
         this._observeAttrChange();
     }
 
-    setState(obj: S | string, value?: any) {
+    setState(obj: Partial<S> | string, value?: any) {
         this._state.setState(obj, value);
         this.state = this._state.getState();
     }
